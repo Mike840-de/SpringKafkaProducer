@@ -1,7 +1,6 @@
-package com.example.kafka.controller;
+package ru.mmtr.producer.controller;
 
-import com.example.kafka.dto.UserDto;
-import org.apache.catalina.User;
+import ru.mmtr.producer.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -9,15 +8,15 @@ import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/msg")
+@RequestMapping("/api/v1/edi")
 public class MsgController {
 
     @Autowired
     private KafkaTemplate<Long, UserDto> kafkaTemplate;
 
-    @PostMapping
+    @PostMapping("/sendDocuments")
     public void sendOrder(@RequestParam Long msgId, @RequestBody UserDto userDto){
-        ListenableFuture<SendResult<Long, UserDto>> future = kafkaTemplate.send("msg", msgId, userDto);
+        ListenableFuture<SendResult<Long, UserDto>> future = kafkaTemplate.send("baeldung", msgId, userDto);
         future.addCallback(System.out::println, System.err::println);
         kafkaTemplate.flush();
     }
